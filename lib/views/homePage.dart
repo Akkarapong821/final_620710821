@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Quiz>? quiz_list;
+  List<Quiz>? QList;
   int c = 0;
   int wrongGuess = 0;
 
@@ -25,14 +25,14 @@ class _HomePageState extends State<HomePage> {
   void _fetch() async {
     List list = await Api().fetch('quizzes');
     setState(() {
-      quiz_list = list.map((item) => Quiz.fromJson(item)).toList();
+      QList = list.map((item) => Quiz.fromJson(item)).toList();
     });
   }
 
   void guess(String choice) {
    {
       setState(() {
-        if (quiz_list![c].answer == choice) {
+        if (QList![c].answer == choice) {
           c++;
         } else {
           wrongGuess++;
@@ -45,9 +45,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: quiz_list != null && c < quiz_list!.length-1
+      body: QList != null && c < QList!.length-1
           ? buildQuiz()
-          : quiz_list != null && c == quiz_list!.length-1
+          : QList != null && c == QList!.length-1
           ? buildTryAgain()
           : const Center(child: CircularProgressIndicator()),
     );
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     wrongGuess = 0;
                     c = 0;
-                    quiz_list = null;
+                    QList = null;
                     _fetch();
                   });
                 },
@@ -89,10 +89,10 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.network(quiz_list![c].image, fit: BoxFit.cover),
+            Image.network(QList![c].image, fit: BoxFit.cover),
             Column(
               children: [
-                for (int i = 0; i < quiz_list![c].choice_list.length; i++)
+                for (int i = 0; i < QList![c].choice_list.length; i++)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -100,8 +100,8 @@ class _HomePageState extends State<HomePage> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () =>
-                                guess(quiz_list![c].choice_list[i].toString()),
-                            child: Text(quiz_list![c].choice_list[i]),
+                                guess(QList![c].choice_list[i].toString()),
+                            child: Text(QList![c].choice_list[i]),
                           ),
                         ),
                       ],
